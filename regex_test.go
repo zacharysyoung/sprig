@@ -9,43 +9,43 @@ import (
 func TestRegexMatch(t *testing.T) {
 	regex := "[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}"
 
-	assert.True(t, regexMatch(regex, "test@acme.com"))
-	assert.True(t, regexMatch(regex, "Test@Acme.Com"))
-	assert.False(t, regexMatch(regex, "test"))
-	assert.False(t, regexMatch(regex, "test.com"))
-	assert.False(t, regexMatch(regex, "test@acme"))
+	assert.True(t, regexMatch("test@acme.com", regex))
+	assert.True(t, regexMatch("Test@Acme.Com", regex))
+	assert.False(t, regexMatch("test", regex))
+	assert.False(t, regexMatch("test.com", regex))
+	assert.False(t, regexMatch("test@acme", regex))
 }
 
 func TestMustRegexMatch(t *testing.T) {
 	regex := "[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}"
 
-	o, err := mustRegexMatch(regex, "test@acme.com")
+	o, err := mustRegexMatch("test@acme.com", regex)
 	assert.True(t, o)
 	assert.Nil(t, err)
 
-	o, err = mustRegexMatch(regex, "Test@Acme.Com")
+	o, err = mustRegexMatch("Test@Acme.Com", regex)
 	assert.True(t, o)
 	assert.Nil(t, err)
 
-	o, err = mustRegexMatch(regex, "test")
+	o, err = mustRegexMatch("test", regex)
 	assert.False(t, o)
 	assert.Nil(t, err)
 
-	o, err = mustRegexMatch(regex, "test.com")
+	o, err = mustRegexMatch("test.com", regex)
 	assert.False(t, o)
 	assert.Nil(t, err)
 
-	o, err = mustRegexMatch(regex, "test@acme")
+	o, err = mustRegexMatch("test@acme", regex)
 	assert.False(t, o)
 	assert.Nil(t, err)
 }
 
 func TestRegexFindAll(t *testing.T) {
 	regex := "a{2}"
-	assert.Equal(t, 1, len(regexFindAll(regex, "aa", -1)))
-	assert.Equal(t, 1, len(regexFindAll(regex, "aaaaaaaa", 1)))
-	assert.Equal(t, 2, len(regexFindAll(regex, "aaaa", -1)))
-	assert.Equal(t, 0, len(regexFindAll(regex, "none", -1)))
+	assert.Equal(t, 1, len(regexFindAll("aa", regex, -1)))
+	assert.Equal(t, 1, len(regexFindAll("aaaaaaaa", regex, 1)))
+	assert.Equal(t, 2, len(regexFindAll("aaaa", regex, -1)))
+	assert.Equal(t, 0, len(regexFindAll("none", regex, -1)))
 }
 
 func TestMustRegexFindAll(t *testing.T) {
@@ -64,7 +64,7 @@ func TestMustRegexFindAll(t *testing.T) {
 	}
 
 	for _, c := range cases {
-		res, err := mustRegexFindAll(c.args.regex, c.args.s, c.args.n)
+		res, err := mustRegexFindAll(c.args.s, c.args.regex, c.args.n)
 		if err != nil {
 			t.Errorf("regexFindAll test case %v failed with err %s", c, err)
 		}
@@ -74,9 +74,9 @@ func TestMustRegexFindAll(t *testing.T) {
 
 func TestRegexFindl(t *testing.T) {
 	regex := "fo.?"
-	assert.Equal(t, "foo", regexFind(regex, "foorbar"))
-	assert.Equal(t, "foo", regexFind(regex, "foo foe fome"))
-	assert.Equal(t, "", regexFind(regex, "none"))
+	assert.Equal(t, "foo", regexFind("foorbar", regex))
+	assert.Equal(t, "foo", regexFind("foo foe fome", regex))
+	assert.Equal(t, "", regexFind("none", regex))
 }
 
 func TestMustRegexFindl(t *testing.T) {
@@ -91,7 +91,7 @@ func TestMustRegexFindl(t *testing.T) {
 	}
 
 	for _, c := range cases {
-		res, err := mustRegexFind(c.args.regex, c.args.s)
+		res, err := mustRegexFind(c.args.s, c.args.regex)
 		if err != nil {
 			t.Errorf("regexFind test case %v failed with err %s", c, err)
 		}
@@ -101,10 +101,10 @@ func TestMustRegexFindl(t *testing.T) {
 
 func TestRegexReplaceAll(t *testing.T) {
 	regex := "a(x*)b"
-	assert.Equal(t, "-T-T-", regexReplaceAll(regex, "-ab-axxb-", "T"))
-	assert.Equal(t, "--xx-", regexReplaceAll(regex, "-ab-axxb-", "$1"))
-	assert.Equal(t, "---", regexReplaceAll(regex, "-ab-axxb-", "$1W"))
-	assert.Equal(t, "-W-xxW-", regexReplaceAll(regex, "-ab-axxb-", "${1}W"))
+	assert.Equal(t, "-T-T-", regexReplaceAll("-ab-axxb-", regex, "T"))
+	assert.Equal(t, "--xx-", regexReplaceAll("-ab-axxb-", regex, "$1"))
+	assert.Equal(t, "---", regexReplaceAll("-ab-axxb-", regex, "$1W"))
+	assert.Equal(t, "-W-xxW-", regexReplaceAll("-ab-axxb-", regex, "${1}W"))
 }
 
 func TestMustRegexReplaceAll(t *testing.T) {
@@ -120,7 +120,7 @@ func TestMustRegexReplaceAll(t *testing.T) {
 	}
 
 	for _, c := range cases {
-		res, err := mustRegexReplaceAll(c.args.regex, c.args.s, c.args.repl)
+		res, err := mustRegexReplaceAll(c.args.s, c.args.regex, c.args.repl)
 		if err != nil {
 			t.Errorf("regexReplaceAll test case %v failed with err %s", c, err)
 		}
@@ -130,9 +130,9 @@ func TestMustRegexReplaceAll(t *testing.T) {
 
 func TestRegexReplaceAllLiteral(t *testing.T) {
 	regex := "a(x*)b"
-	assert.Equal(t, "-T-T-", regexReplaceAllLiteral(regex, "-ab-axxb-", "T"))
-	assert.Equal(t, "-$1-$1-", regexReplaceAllLiteral(regex, "-ab-axxb-", "$1"))
-	assert.Equal(t, "-${1}-${1}-", regexReplaceAllLiteral(regex, "-ab-axxb-", "${1}"))
+	assert.Equal(t, "-T-T-", regexReplaceAllLiteral("-ab-axxb-", regex, "T"))
+	assert.Equal(t, "-$1-$1-", regexReplaceAllLiteral("-ab-axxb-", regex, "$1"))
+	assert.Equal(t, "-${1}-${1}-", regexReplaceAllLiteral("-ab-axxb-", regex, "${1}"))
 }
 
 func TestMustRegexReplaceAllLiteral(t *testing.T) {
@@ -147,7 +147,7 @@ func TestMustRegexReplaceAllLiteral(t *testing.T) {
 	}
 
 	for _, c := range cases {
-		res, err := mustRegexReplaceAllLiteral(c.args.regex, c.args.s, c.args.repl)
+		res, err := mustRegexReplaceAllLiteral(c.args.s, c.args.regex, c.args.repl)
 		if err != nil {
 			t.Errorf("regexReplaceAllLiteral test case %v failed with err %s", c, err)
 		}
@@ -157,16 +157,16 @@ func TestMustRegexReplaceAllLiteral(t *testing.T) {
 
 func TestRegexSplit(t *testing.T) {
 	regex := "a"
-	assert.Equal(t, 4, len(regexSplit(regex, "banana", -1)))
-	assert.Equal(t, 0, len(regexSplit(regex, "banana", 0)))
-	assert.Equal(t, 1, len(regexSplit(regex, "banana", 1)))
-	assert.Equal(t, 2, len(regexSplit(regex, "banana", 2)))
+	assert.Equal(t, 4, len(regexSplit("banana", regex, -1)))
+	assert.Equal(t, 0, len(regexSplit("banana", regex, 0)))
+	assert.Equal(t, 1, len(regexSplit("banana", regex, 1)))
+	assert.Equal(t, 2, len(regexSplit("banana", regex, 2)))
 
 	regex = "z+"
-	assert.Equal(t, 2, len(regexSplit(regex, "pizza", -1)))
-	assert.Equal(t, 0, len(regexSplit(regex, "pizza", 0)))
-	assert.Equal(t, 1, len(regexSplit(regex, "pizza", 1)))
-	assert.Equal(t, 2, len(regexSplit(regex, "pizza", 2)))
+	assert.Equal(t, 2, len(regexSplit("pizza", regex, -1)))
+	assert.Equal(t, 0, len(regexSplit("pizza", regex, 0)))
+	assert.Equal(t, 1, len(regexSplit("pizza", regex, 1)))
+	assert.Equal(t, 2, len(regexSplit("pizza", regex, 2)))
 }
 
 func TestMustRegexSplit(t *testing.T) {
@@ -189,7 +189,7 @@ func TestMustRegexSplit(t *testing.T) {
 	}
 
 	for _, c := range cases {
-		res, err := mustRegexSplit(c.args.regex, c.args.s, c.args.n)
+		res, err := mustRegexSplit(c.args.s, c.args.regex, c.args.n)
 		if err != nil {
 			t.Errorf("regexSplit test case %v failed with err %s", c, err)
 		}

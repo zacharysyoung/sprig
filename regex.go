@@ -4,21 +4,21 @@ import (
 	"regexp"
 )
 
-func regexMatch(regex string, s string) bool {
+func regexMatch(s string, regex string) bool {
 	match, _ := regexp.MatchString(regex, s)
 	return match
 }
 
-func mustRegexMatch(regex string, s string) (bool, error) {
+func mustRegexMatch(s string, regex string) (bool, error) {
 	return regexp.MatchString(regex, s)
 }
 
-func regexFindAll(regex string, s string, n int) []string {
+func regexFindAll(s string, regex string, n int) []string {
 	r := regexp.MustCompile(regex)
 	return r.FindAllString(s, n)
 }
 
-func mustRegexFindAll(regex string, s string, n int) ([]string, error) {
+func mustRegexFindAll(s string, regex string, n int) ([]string, error) {
 	r, err := regexp.Compile(regex)
 	if err != nil {
 		return []string{}, err
@@ -26,12 +26,12 @@ func mustRegexFindAll(regex string, s string, n int) ([]string, error) {
 	return r.FindAllString(s, n), nil
 }
 
-func regexFind(regex string, s string) string {
+func regexFind(s string, regex string) string {
 	r := regexp.MustCompile(regex)
 	return r.FindString(s)
 }
 
-func mustRegexFind(regex string, s string) (string, error) {
+func mustRegexFind(s string, regex string) (string, error) {
 	r, err := regexp.Compile(regex)
 	if err != nil {
 		return "", err
@@ -39,12 +39,12 @@ func mustRegexFind(regex string, s string) (string, error) {
 	return r.FindString(s), nil
 }
 
-func regexReplaceAll(regex string, s string, repl string) string {
+func regexReplaceAll(s string, regex string, repl string) string {
 	r := regexp.MustCompile(regex)
 	return r.ReplaceAllString(s, repl)
 }
 
-func mustRegexReplaceAll(regex string, s string, repl string) (string, error) {
+func mustRegexReplaceAll(s string, regex string, repl string) (string, error) {
 	r, err := regexp.Compile(regex)
 	if err != nil {
 		return "", err
@@ -52,12 +52,12 @@ func mustRegexReplaceAll(regex string, s string, repl string) (string, error) {
 	return r.ReplaceAllString(s, repl), nil
 }
 
-func regexReplaceAllLiteral(regex string, s string, repl string) string {
+func regexReplaceAllLiteral(s string, regex string, repl string) string {
 	r := regexp.MustCompile(regex)
 	return r.ReplaceAllLiteralString(s, repl)
 }
 
-func mustRegexReplaceAllLiteral(regex string, s string, repl string) (string, error) {
+func mustRegexReplaceAllLiteral(s string, regex string, repl string) (string, error) {
 	r, err := regexp.Compile(regex)
 	if err != nil {
 		return "", err
@@ -65,12 +65,12 @@ func mustRegexReplaceAllLiteral(regex string, s string, repl string) (string, er
 	return r.ReplaceAllLiteralString(s, repl), nil
 }
 
-func regexSplit(regex string, s string, n int) []string {
+func regexSplit(s string, regex string, n int) []string {
 	r := regexp.MustCompile(regex)
 	return r.Split(s, n)
 }
 
-func mustRegexSplit(regex string, s string, n int) ([]string, error) {
+func mustRegexSplit(s string, regex string, n int) ([]string, error) {
 	r, err := regexp.Compile(regex)
 	if err != nil {
 		return []string{}, err

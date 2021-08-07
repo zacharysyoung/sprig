@@ -25,7 +25,7 @@ func TestPush(t *testing.T) {
 	tests := map[string]string{
 		`{{ $t := tuple 1 2 3  }}{{ append $t 4 | len }}`:                             "4",
 		`{{ $t := tuple 1 2 3 4  }}{{ append $t 5 | join "-" }}`:                      "1-2-3-4-5",
-		`{{ $t := regexSplit "/" "foo/bar/baz" -1 }}{{ append $t "qux" | join "-" }}`: "foo-bar-baz-qux",
+		`{{ $t := regexSplit "foo/bar/baz" "/" -1 }}{{ append $t "qux" | join "-" }}`: "foo-bar-baz-qux",
 	}
 	for tpl, expect := range tests {
 		assert.NoError(t, runt(tpl, expect))
@@ -37,7 +37,7 @@ func TestMustPush(t *testing.T) {
 	tests := map[string]string{
 		`{{ $t := tuple 1 2 3  }}{{ mustAppend $t 4 | len }}`:                           "4",
 		`{{ $t := tuple 1 2 3 4  }}{{ mustAppend $t 5 | join "-" }}`:                    "1-2-3-4-5",
-		`{{ $t := regexSplit "/" "foo/bar/baz" -1 }}{{ mustPush $t "qux" | join "-" }}`: "foo-bar-baz-qux",
+		`{{ $t := regexSplit "foo/bar/baz" "/" -1 }}{{ mustPush $t "qux" | join "-" }}`: "foo-bar-baz-qux",
 	}
 	for tpl, expect := range tests {
 		assert.NoError(t, runt(tpl, expect))
@@ -74,7 +74,7 @@ func TestPrepend(t *testing.T) {
 	tests := map[string]string{
 		`{{ $t := tuple 1 2 3  }}{{ prepend $t 0 | len }}`:                             "4",
 		`{{ $t := tuple 1 2 3 4  }}{{ prepend $t 0 | join "-" }}`:                      "0-1-2-3-4",
-		`{{ $t := regexSplit "/" "foo/bar/baz" -1 }}{{ prepend $t "qux" | join "-" }}`: "qux-foo-bar-baz",
+		`{{ $t := regexSplit "foo/bar/baz" "/" -1 }}{{ prepend $t "qux" | join "-" }}`: "qux-foo-bar-baz",
 	}
 	for tpl, expect := range tests {
 		assert.NoError(t, runt(tpl, expect))
@@ -85,7 +85,7 @@ func TestMustPrepend(t *testing.T) {
 	tests := map[string]string{
 		`{{ $t := tuple 1 2 3  }}{{ mustPrepend $t 0 | len }}`:                             "4",
 		`{{ $t := tuple 1 2 3 4  }}{{ mustPrepend $t 0 | join "-" }}`:                      "0-1-2-3-4",
-		`{{ $t := regexSplit "/" "foo/bar/baz" -1 }}{{ mustPrepend $t "qux" | join "-" }}`: "qux-foo-bar-baz",
+		`{{ $t := regexSplit "foo/bar/baz" "/" -1 }}{{ mustPrepend $t "qux" | join "-" }}`: "qux-foo-bar-baz",
 	}
 	for tpl, expect := range tests {
 		assert.NoError(t, runt(tpl, expect))
@@ -96,7 +96,7 @@ func TestFirst(t *testing.T) {
 	tests := map[string]string{
 		`{{ list 1 2 3 | first }}`:                          "1",
 		`{{ list | first }}`:                                "<no value>",
-		`{{ regexSplit "/src/" "foo/src/bar" -1 | first }}`: "foo",
+		`{{ regexSplit "foo/src/bar" "/src/" -1 | first }}`: "foo",
 	}
 	for tpl, expect := range tests {
 		assert.NoError(t, runt(tpl, expect))
@@ -107,7 +107,7 @@ func TestMustFirst(t *testing.T) {
 	tests := map[string]string{
 		`{{ list 1 2 3 | mustFirst }}`:                          "1",
 		`{{ list | mustFirst }}`:                                "<no value>",
-		`{{ regexSplit "/src/" "foo/src/bar" -1 | mustFirst }}`: "foo",
+		`{{ regexSplit "foo/src/bar" "/src/" -1 | mustFirst }}`: "foo",
 	}
 	for tpl, expect := range tests {
 		assert.NoError(t, runt(tpl, expect))
@@ -118,7 +118,7 @@ func TestLast(t *testing.T) {
 	tests := map[string]string{
 		`{{ list 1 2 3 | last }}`:                          "3",
 		`{{ list | last }}`:                                "<no value>",
-		`{{ regexSplit "/src/" "foo/src/bar" -1 | last }}`: "bar",
+		`{{ regexSplit "foo/src/bar" "/src/" -1 | last }}`: "bar",
 	}
 	for tpl, expect := range tests {
 		assert.NoError(t, runt(tpl, expect))
@@ -129,7 +129,7 @@ func TestMustLast(t *testing.T) {
 	tests := map[string]string{
 		`{{ list 1 2 3 | mustLast }}`:                          "3",
 		`{{ list | mustLast }}`:                                "<no value>",
-		`{{ regexSplit "/src/" "foo/src/bar" -1 | mustLast }}`: "bar",
+		`{{ regexSplit "foo/src/bar" "/src/" -1 | mustLast }}`: "bar",
 	}
 	for tpl, expect := range tests {
 		assert.NoError(t, runt(tpl, expect))
@@ -142,7 +142,7 @@ func TestInitial(t *testing.T) {
 		`{{ list 1 2 3 | initial | last }}`:               "2",
 		`{{ list 1 2 3 | initial | first }}`:              "1",
 		`{{ list | initial }}`:                            "[]",
-		`{{ regexSplit "/" "foo/bar/baz" -1 | initial }}`: "[foo bar]",
+		`{{ regexSplit "foo/bar/baz" "/" -1 | initial }}`: "[foo bar]",
 	}
 	for tpl, expect := range tests {
 		assert.NoError(t, runt(tpl, expect))
@@ -155,7 +155,7 @@ func TestMustInitial(t *testing.T) {
 		`{{ list 1 2 3 | mustInitial | last }}`:               "2",
 		`{{ list 1 2 3 | mustInitial | first }}`:              "1",
 		`{{ list | mustInitial }}`:                            "[]",
-		`{{ regexSplit "/" "foo/bar/baz" -1 | mustInitial }}`: "[foo bar]",
+		`{{ regexSplit "foo/bar/baz" "/" -1 | mustInitial }}`: "[foo bar]",
 	}
 	for tpl, expect := range tests {
 		assert.NoError(t, runt(tpl, expect))
@@ -168,7 +168,7 @@ func TestRest(t *testing.T) {
 		`{{ list 1 2 3 | rest | last }}`:               "3",
 		`{{ list 1 2 3 | rest | first }}`:              "2",
 		`{{ list | rest }}`:                            "[]",
-		`{{ regexSplit "/" "foo/bar/baz" -1 | rest }}`: "[bar baz]",
+		`{{ regexSplit "foo/bar/baz" "/" -1 | rest }}`: "[bar baz]",
 	}
 	for tpl, expect := range tests {
 		assert.NoError(t, runt(tpl, expect))
@@ -181,7 +181,7 @@ func TestMustRest(t *testing.T) {
 		`{{ list 1 2 3 | mustRest | last }}`:               "3",
 		`{{ list 1 2 3 | mustRest | first }}`:              "2",
 		`{{ list | mustRest }}`:                            "[]",
-		`{{ regexSplit "/" "foo/bar/baz" -1 | mustRest }}`: "[bar baz]",
+		`{{ regexSplit "foo/bar/baz" "/" -1 | mustRest }}`: "[bar baz]",
 	}
 	for tpl, expect := range tests {
 		assert.NoError(t, runt(tpl, expect))
@@ -196,7 +196,7 @@ func TestReverse(t *testing.T) {
 		`{{ list 1 2 3 4 | reverse }}`:                    "[4 3 2 1]",
 		`{{ list 1 | reverse }}`:                          "[1]",
 		`{{ list | reverse }}`:                            "[]",
-		`{{ regexSplit "/" "foo/bar/baz" -1 | reverse }}`: "[baz bar foo]",
+		`{{ regexSplit "foo/bar/baz" "/" -1 | reverse }}`: "[baz bar foo]",
 	}
 	for tpl, expect := range tests {
 		assert.NoError(t, runt(tpl, expect))
@@ -211,7 +211,7 @@ func TestMustReverse(t *testing.T) {
 		`{{ list 1 2 3 4 | mustReverse }}`:                    "[4 3 2 1]",
 		`{{ list 1 | mustReverse }}`:                          "[1]",
 		`{{ list | mustReverse }}`:                            "[]",
-		`{{ regexSplit "/" "foo/bar/baz" -1 | mustReverse }}`: "[baz bar foo]",
+		`{{ regexSplit "foo/bar/baz" "/" -1 | mustReverse }}`: "[baz bar foo]",
 	}
 	for tpl, expect := range tests {
 		assert.NoError(t, runt(tpl, expect))
@@ -223,7 +223,7 @@ func TestCompact(t *testing.T) {
 		`{{ list 1 0 "" "hello" | compact }}`:          `[1 hello]`,
 		`{{ list "" "" | compact }}`:                   `[]`,
 		`{{ list | compact }}`:                         `[]`,
-		`{{ regexSplit "/" "foo//bar" -1 | compact }}`: "[foo bar]",
+		`{{ regexSplit "foo//bar" "/" -1 | compact }}`: "[foo bar]",
 	}
 	for tpl, expect := range tests {
 		assert.NoError(t, runt(tpl, expect))
@@ -235,7 +235,7 @@ func TestMustCompact(t *testing.T) {
 		`{{ list 1 0 "" "hello" | mustCompact }}`:          `[1 hello]`,
 		`{{ list "" "" | mustCompact }}`:                   `[]`,
 		`{{ list | mustCompact }}`:                         `[]`,
-		`{{ regexSplit "/" "foo//bar" -1 | mustCompact }}`: "[foo bar]",
+		`{{ regexSplit "foo//bar" "/" -1 | mustCompact }}`: "[foo bar]",
 	}
 	for tpl, expect := range tests {
 		assert.NoError(t, runt(tpl, expect))
@@ -249,7 +249,7 @@ func TestUniq(t *testing.T) {
 		`{{ list 1 1 1 1 2 2 2 2 | uniq }}`:            `[1 2]`,
 		`{{ list "foo" 1 1 1 1 "foo" "foo" | uniq }}`:  `[foo 1]`,
 		`{{ list | uniq }}`:                            `[]`,
-		`{{ regexSplit "/" "foo/foo/bar" -1 | uniq }}`: "[foo bar]",
+		`{{ regexSplit "foo/foo/bar" "/" -1 | uniq }}`: "[foo bar]",
 	}
 	for tpl, expect := range tests {
 		assert.NoError(t, runt(tpl, expect))
@@ -263,7 +263,7 @@ func TestMustUniq(t *testing.T) {
 		`{{ list 1 1 1 1 2 2 2 2 | mustUniq }}`:            `[1 2]`,
 		`{{ list "foo" 1 1 1 1 "foo" "foo" | mustUniq }}`:  `[foo 1]`,
 		`{{ list | mustUniq }}`:                            `[]`,
-		`{{ regexSplit "/" "foo/foo/bar" -1 | mustUniq }}`: "[foo bar]",
+		`{{ regexSplit "foo/foo/bar" "/" -1 | mustUniq }}`: "[foo bar]",
 	}
 	for tpl, expect := range tests {
 		assert.NoError(t, runt(tpl, expect))
@@ -278,7 +278,7 @@ func TestWithout(t *testing.T) {
 		`{{ without (list) 1 }}`:                                 `[]`,
 		`{{ without (list 1 2 3) }}`:                             `[1 2 3]`,
 		`{{ without list }}`:                                     `[]`,
-		`{{ without (regexSplit "/" "foo/bar/baz" -1 ) "foo" }}`: "[bar baz]",
+		`{{ without (regexSplit "foo/bar/baz" "/" -1 ) "foo" }}`: "[bar baz]",
 	}
 	for tpl, expect := range tests {
 		assert.NoError(t, runt(tpl, expect))
@@ -293,7 +293,7 @@ func TestMustWithout(t *testing.T) {
 		`{{ mustWithout (list) 1 }}`:                                 `[]`,
 		`{{ mustWithout (list 1 2 3) }}`:                             `[1 2 3]`,
 		`{{ mustWithout list }}`:                                     `[]`,
-		`{{ mustWithout (regexSplit "/" "foo/bar/baz" -1 ) "foo" }}`: "[bar baz]",
+		`{{ mustWithout (regexSplit "foo/bar/baz" "/" -1 ) "foo" }}`: "[bar baz]",
 	}
 	for tpl, expect := range tests {
 		assert.NoError(t, runt(tpl, expect))
@@ -304,7 +304,7 @@ func TestHas(t *testing.T) {
 	tests := map[string]string{
 		`{{ list 1 2 3 | has 1 }}`:                          `true`,
 		`{{ list 1 2 3 | has 4 }}`:                          `false`,
-		`{{ regexSplit "/" "foo/bar/baz" -1 | has "bar" }}`: `true`,
+		`{{ regexSplit "foo/bar/baz" "/" -1 | has "bar" }}`: `true`,
 		`{{ has "bar" nil }}`:                               `false`,
 	}
 	for tpl, expect := range tests {
@@ -316,7 +316,7 @@ func TestMustHas(t *testing.T) {
 	tests := map[string]string{
 		`{{ list 1 2 3 | mustHas 1 }}`:                          `true`,
 		`{{ list 1 2 3 | mustHas 4 }}`:                          `false`,
-		`{{ regexSplit "/" "foo/bar/baz" -1 | mustHas "bar" }}`: `true`,
+		`{{ regexSplit "foo/bar/baz" "/" -1 | mustHas "bar" }}`: `true`,
 		`{{ mustHas "bar" nil }}`:                               `false`,
 	}
 	for tpl, expect := range tests {
@@ -330,7 +330,7 @@ func TestSlice(t *testing.T) {
 		`{{ slice (list 1 2 3) 0 1 }}`:                      "[1]",
 		`{{ slice (list 1 2 3) 1 3 }}`:                      "[2 3]",
 		`{{ slice (list 1 2 3) 1 }}`:                        "[2 3]",
-		`{{ slice (regexSplit "/" "foo/bar/baz" -1) 1 2 }}`: "[bar]",
+		`{{ slice (regexSplit "foo/bar/baz" "/" -1) 1 2 }}`: "[bar]",
 	}
 	for tpl, expect := range tests {
 		assert.NoError(t, runt(tpl, expect))
@@ -343,7 +343,7 @@ func TestMustSlice(t *testing.T) {
 		`{{ mustSlice (list 1 2 3) 0 1 }}`:                      "[1]",
 		`{{ mustSlice (list 1 2 3) 1 3 }}`:                      "[2 3]",
 		`{{ mustSlice (list 1 2 3) 1 }}`:                        "[2 3]",
-		`{{ mustSlice (regexSplit "/" "foo/bar/baz" -1) 1 2 }}`: "[bar]",
+		`{{ mustSlice (regexSplit "foo/bar/baz" "/" -1) 1 2 }}`: "[bar]",
 	}
 	for tpl, expect := range tests {
 		assert.NoError(t, runt(tpl, expect))
